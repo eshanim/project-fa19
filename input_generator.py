@@ -16,7 +16,6 @@ num_of_tas = random.randrange(10, 25)
 
 def validate_input(input_file, params=[]):
     message, error = tests(input_file, params)
-    print(message)
     return error
 
 adjacency = [["x" for i in range(num_of_locations)] for j in range(num_of_locations)]
@@ -75,7 +74,7 @@ for list in adjacency:
 
 
 
-for i in range(random.randint(num_of_locations, 5*num_of_locations)):
+for i in range(random.randint(num_of_locations, (num_of_locations*num_of_locations)-(2*num_of_locations))):
     randi = random.randint(0, num_of_locations - 1)
     randj = random.randint(0, num_of_locations - 1)
     stored = adjacency[randi][randj]
@@ -94,7 +93,6 @@ for i in range(random.randint(num_of_locations, 5*num_of_locations)):
     for l in adjacency:
         write_data_to_file(f, l, " ", True)
         write_to_file(f, "\n", True)
-    print(validate_input(f))
     if validate_input(f):
         adjacency[randi][randj] = stored
         adjacency[randj][randi] = stored
