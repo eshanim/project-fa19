@@ -27,7 +27,14 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     """
     path = [starting_car_location]
     dict = {}
-    dict[0] = list_of_homes
+    dict[0] = range(len(list_of_homes))
+    print(path)
+    index = 0
+    for i in range(len(list_of_locations)):
+        if list_of_locations[i] == starting_car_location:
+            index = i
+
+    path = [index]
     return path, dict
 
     pass
@@ -71,7 +78,7 @@ def solve_from_file(input_file, output_directory, params=[]):
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
     output_file = utils.input_to_output(input_file, output_directory)
-
+    print(car_path)
     convertToFile(car_path, drop_offs, output_file, list_locations)
 
 
