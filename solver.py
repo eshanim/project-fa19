@@ -27,7 +27,6 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     """
     path = [starting_car_location]
     dict = {}
-    dict[0] = range(len(list_of_homes))
     print(path)
     index = 0
     for i in range(len(list_of_locations)):
@@ -35,6 +34,20 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
             index = i
 
     path = [index]
+
+
+    home_indexes = []
+
+    for home in list_of_homes:
+        for i in range(len(list_of_locations)):
+            if list_of_locations[i] == home:
+                home_indexes.append(i)
+                break
+
+
+    dict[index] = home_indexes
+
+    print(dict)
     return path, dict
 
     pass
