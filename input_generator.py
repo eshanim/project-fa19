@@ -66,7 +66,7 @@ locs = generate_locs(num_of_locations)
 
 start_point = generate_start_point(locs)
 
-homes = generate_homes(num_of_tas, locs) 
+homes = generate_homes(num_of_tas, locs)
 
 str_loc = ""
 str_home = ""
@@ -123,10 +123,10 @@ for i in range(random.randint(num_of_locations, (num_of_locations*num_of_locatio
         adjacency[randi][randj] = stored
         adjacency[randj][randi] = stored
 
-#Generating an input of size 51 to 100
+#Generating an input of size 70 to 100
 
-num_of_locations = random.randrange(51, 100)
-num_of_tas = random.randrange(10, 25)
+num_of_locations = random.randrange(70, 100)
+num_of_tas = random.randrange(30, 50)
 
 adjacency = generate_adjacency(num_of_locations)
 
@@ -134,7 +134,7 @@ locs = generate_locs(num_of_locations)
 
 start_point = generate_start_point(locs)
 
-homes = generate_homes(num_of_tas, locs) 
+homes = generate_homes(num_of_tas, locs)
 
 str_loc = ""
 str_home = ""
@@ -191,10 +191,10 @@ for i in range(random.randint(num_of_locations, (num_of_locations*num_of_locatio
         adjacency[randi][randj] = stored
         adjacency[randj][randi] = stored
 
-#Generating an input of size 101 to 200
+#Generating an input of size 150 to 200
 
-num_of_locations = random.randrange(101, 200)
-num_of_tas = random.randrange(10, 25)
+num_of_locations = random.randrange(150, 200)
+num_of_tas = random.randrange(70, 100)
 
 adjacency = generate_adjacency(num_of_locations)
 
@@ -202,7 +202,7 @@ locs = generate_locs(num_of_locations)
 
 start_point = generate_start_point(locs)
 
-homes = generate_homes(num_of_tas, locs) 
+homes = generate_homes(num_of_tas, locs)
 
 str_loc = ""
 str_home = ""
@@ -258,4 +258,3 @@ for i in range(random.randint(num_of_locations, (num_of_locations*num_of_locatio
     if validate_input(h):
         adjacency[randi][randj] = stored
         adjacency[randj][randi] = stored
-
