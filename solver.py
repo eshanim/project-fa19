@@ -4,6 +4,8 @@ sys.path.append('..')
 sys.path.append('../..')
 import argparse
 import utils
+import networkx as nx
+import student_utils
 
 from student_utils import *
 """
@@ -25,6 +27,10 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         A dictionary mapping drop-off location to a list of homes of TAs that got off at that particular location
         NOTE: both outputs should be in terms of indices not the names of the locations themselves
     """
+
+
+
+
     path = [starting_car_location]
     dict = {}
     print(path)
@@ -35,6 +41,8 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     path = [index]
 
+    G, m = adjacency_matrix_to_graph(adjacency_matrix)
+
 
     home_indexes = []
 
@@ -44,10 +52,47 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                 home_indexes.append(i)
                 break
 
+    new_adjacency = [["x" for i in range(len(list_of_locations))] for j in range(len(list_of_locations))]
+
+
+    for home in home_indexes:
+        di_path = nx.dijkstra_path(G, index, home)
+        for i in range(len(di_path) -  1):
+            new_adjacency[di_path[i]][di_path[i + 1]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
+            new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
+
+
+    for home1 in home_indexes:
+        for home2 in home_indexes:
+            if not home1 == home2:
+                di_path = nx.dijkstra_path(G, home1, home2)
+                for i in range(len(di_path) -  1):
+                    new_adjacency[di_path[i]][di_path[i + 1]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
+                    new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
+
+
+
+
+
+    #
+    # end = 1
+    # for home in home_indexes:
+    #     di_path = nx.dijkstra_path(G, home, end)
+    #     for i in range(len(di_path) -  1):
+    #         new_adjacency[di_path[i]][di_path[i + 1]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
+    #         new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
+
+
+    G2, m = adjacency_matrix_to_graph(new_adjacency)
+    drive_path = list(nx.dfs_preorder_nodes(G2, source=index))
+    drive_path.append(index)
+    print(drive_path)
+
+
 
     dict[index] = home_indexes
 
-    print(dict)
+
     return path, dict
 
     pass
