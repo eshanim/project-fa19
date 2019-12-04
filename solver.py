@@ -71,6 +71,23 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
 
 
+
+
+    G2, m = adjacency_matrix_to_graph(new_adjacency)
+
+    all_driving_path = list(nx.dfs_edges(G2))
+    print(all_driving_path)
+    for i in range(len(all_driving_path) - 1):
+        #if first vertex in edge is the same, we should walk
+        if all_driving_path[i][0] == all_driving_path[i + 1][0]:
+            print(all_driving_path[i][0])
+            print(all_driving_path[i][1])
+            #get rid of only edge connected to this home
+            new_adjacency[all_driving_path[i][0]][all_driving_path[i][1]] = "x"
+            new_adjacency[all_driving_path[i][1]][all_driving_path[i][0]] = "x"
+
+
+
     # condensed shortest paths to edges - use G3 for real
 
     new_adjacency2 = [["x" for i in range(len(list_of_locations))] for j in range(len(list_of_locations))]
@@ -98,21 +115,6 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     new_adjacency2[start][end] += adjacency_matrix[di_path[i]][di_path[i + 1]]
                     new_adjacency2[end][start] += adjacency_matrix[di_path[i]][di_path[i + 1]]
 
-
-    G2, m = adjacency_matrix_to_graph(new_adjacency)
-
-    all_driving_path = list(nx.dfs_edges(G2))
-    print(all_driving_path)
-    for i in range(len(all_driving_path) - 1):
-        #if first vertex in edge is the same, we should walk
-        if all_driving_path[i][0] == all_driving_path[i + 1][0]:
-            print(all_driving_path[i][0])
-            print(all_driving_path[i][1])
-            #get rid of only edge connected to this home
-            for i in range(len(new_adjacency2)):
-                
-            new_adjacency2[all_driving_path[i][0]][all_driving_path[i][1]] = "x"
-            new_adjacency2[all_driving_path[i][1]][all_driving_path[i][0]] = "x"
 
     print(new_adjacency2)
     final_G, m = adjacency_matrix_to_graph(new_adjacency2)
