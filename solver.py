@@ -54,7 +54,7 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     new_adjacency = [["x" for i in range(len(list_of_locations))] for j in range(len(list_of_locations))]
 
-
+    # for sake of figuring out where to walk
     for home in home_indexes:
         di_path = nx.dijkstra_path(G, index, home)
         for i in range(len(di_path) -  1):
@@ -71,20 +71,52 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
 
 
+    # condensed shortest paths to edges - use G3 for real
+
+    new_adjacency2 = [["x" for i in range(len(list_of_locations))] for j in range(len(list_of_locations))]
+
+    for home in home_indexes:
+        di_path = nx.dijkstra_path(G, index, home)
+        start = di_path[0]
+        end = di_path[len(di_path) - 1]
+        new_adjacency2[start][end] = 0
+        new_adjacency2[end][start] = 0
+        for i in range(len(di_path) -  1):
+            new_adjacency2[start][end] += adjacency_matrix[di_path[i]][di_path[i + 1]]
+            new_adjacency2[end][start] += adjacency_matrix[di_path[i]][di_path[i + 1]]
 
 
-
-    #
-    # end = 1
-    # for home in home_indexes:
-    #     di_path = nx.dijkstra_path(G, home, end)
-    #     for i in range(len(di_path) -  1):
-    #         new_adjacency[di_path[i]][di_path[i + 1]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
-    #         new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
+    for home1 in home_indexes:
+        for home2 in home_indexes:
+            if not home1 == home2:
+                di_path = nx.dijkstra_path(G, home1, home2)
+                start = di_path[0]
+                end = di_path[len(di_path) - 1]
+                new_adjacency2[start][end] = 0
+                new_adjacency2[end][start] = 0
+                for i in range(len(di_path) -  1):
+                    new_adjacency2[start][end] += adjacency_matrix[di_path[i]][di_path[i + 1]]
+                    new_adjacency2[end][start] += adjacency_matrix[di_path[i]][di_path[i + 1]]
 
 
     G2, m = adjacency_matrix_to_graph(new_adjacency)
-    drive_path = list(nx.dfs_preorder_nodes(G2, source=index))
+
+    all_driving_path = list(nx.dfs_edges(G2))
+    print(all_driving_path)
+    for i in range(len(all_driving_path) - 1):
+        #if first vertex in edge is the same, we should walk
+        if all_driving_path[i][0] == all_driving_path[i + 1][0]:
+            print(all_driving_path[i][0])
+            print(all_driving_path[i][1])
+            #get rid of only edge connected to this home
+            for i in range(len(new_adjacency2)):
+                
+            new_adjacency2[all_driving_path[i][0]][all_driving_path[i][1]] = "x"
+            new_adjacency2[all_driving_path[i][1]][all_driving_path[i][0]] = "x"
+
+    print(new_adjacency2)
+    final_G, m = adjacency_matrix_to_graph(new_adjacency2)
+    drive_path = list(nx.dfs_edges(final_G, source=index))
     drive_path.append(index)
     print(drive_path)
 
