@@ -7,6 +7,8 @@ import utils
 import networkx as nx
 import student_utils
 
+import matplotlib.pyplot as plt
+
 from student_utils import *
 """
 ======================================================================
@@ -33,7 +35,6 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     path = [starting_car_location]
     dict = {}
-    print(path)
     index = 0
     for i in range(len(list_of_locations)):
         if list_of_locations[i] == starting_car_location:
@@ -76,8 +77,6 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     G2, m = adjacency_matrix_to_graph(new_adjacency)
 
     all_driving_path = list(nx.dfs_edges(G2))
-    print(all_driving_path)
-    print(new_adjacency)
 
 
 
@@ -89,8 +88,8 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     for i in range(len(new_adjacency)):
         if i in home_indexes:
             count = 0
+            edge_to = 0
             for j in range(len(new_adjacency)):
-                edge_to = 0
                 if new_adjacency[i][j] != "x":
                     count += 1
                     edge_to = j
@@ -103,7 +102,6 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     walking_from[edge_to] = walking_from[edge_to] + [i]
                 else:
                     walking_from[edge_to] = [i]
-
 
     #
     # for i in range(len(all_driving_path) - 1):
@@ -120,23 +118,23 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     #         else:
     #             walking_from[all_driving_path[i][0]] = [all_driving_path[i][1]]
 
-    print(walking_from)
 
-    dropoff_locations = walking_from.keys()
+
+    dropoff_locations = list(walking_from.keys())
     for loc in dropoff_locations:
         if loc in home_indexes:
-            home_indexes.remove(loc)
+            dropoff_locations.remove(loc)
 
 
     for loc in dropoff_locations:
-        di_path = nx.dijkstra_path(G, index, home)
+        di_path = nx.dijkstra_path(G, loc, home)
         for i in range(len(di_path) -  1):
             new_adjacency[di_path[i]][di_path[i + 1]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
             new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
 
     for loc in dropoff_locations:
         for home in home_indexes:
-            di_path = nx.dijkstra_path(G, home1, home2)
+            di_path = nx.dijkstra_path(G, loc, home)
             for i in range(len(di_path) -  1):
                 new_adjacency[di_path[i]][di_path[i + 1]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
                 new_adjacency[di_path[i + 1]][di_path[i]] = adjacency_matrix[di_path[i]][di_path[i + 1]]
@@ -172,13 +170,54 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     new_adjacency2[start][end] += new_adjacency[di_path[i]][di_path[i + 1]]
                     new_adjacency2[end][start] += new_adjacency[di_path[i]][di_path[i + 1]]
 
+    for loc in dropoff_locations:
+        di_path = nx.dijkstra_path(G2, index, loc)
+        start = di_path[0]
+        end = di_path[len(di_path) - 1]
+        new_adjacency2[start][end] = 0
+        new_adjacency2[end][start] = 0
+        for i in range(len(di_path) -  1):
+            new_adjacency2[start][end] += new_adjacency[di_path[i]][di_path[i + 1]]
+            new_adjacency2[end][start] += new_adjacency[di_path[i]][di_path[i + 1]]
+
+    for loc in dropoff_locations:
+        for home in home_indexes:
+            di_path = nx.dijkstra_path(G2, loc, home)
+            start = di_path[0]
+            end = di_path[len(di_path) - 1]
+            new_adjacency2[start][end] = 0
+            new_adjacency2[end][start] = 0
+            for i in range(len(di_path) -  1):
+                new_adjacency2[start][end] += new_adjacency[di_path[i]][di_path[i + 1]]
+                new_adjacency2[end][start] += new_adjacency[di_path[i]][di_path[i + 1]]
 
 
-    print(new_adjacency2)
+
+
     final_G, m = adjacency_matrix_to_graph(new_adjacency2)
     drive_path = list(nx.dfs_edges(final_G, source=index))
     drive_path.append(index)
-    print(drive_path)
+
+    mst = nx.minimum_spanning_tree(final_G)
+    path = list(nx.dfs_preorder_nodes(mst, index))
+    print(path)
+    final_path = []
+    for node in path:
+        if node == index:
+            final_path.append(node)
+            print("Index: ", node)
+        elif node in home_indexes and node not in walking_to:
+            final_path.append(node)
+            print("Home but not walking: ", node)
+        elif node in dropoff_locations:
+            final_path.append(node)
+            print("Dropoff loc: ", node)
+    final_path.append(index)
+    print(walking_from)
+    print(final_path)
+    nx.draw(mst)
+    plt.draw()
+    plt.show()
 
 
 
