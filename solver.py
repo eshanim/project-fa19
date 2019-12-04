@@ -200,31 +200,36 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     mst = nx.minimum_spanning_tree(final_G)
     path = list(nx.dfs_preorder_nodes(mst, index))
-    print(path)
+    # print(path)
     final_path = []
     for node in path:
         if node == index:
             final_path.append(node)
-            print("Index: ", node)
+            # print("Index: ", node)
         elif node in home_indexes and node not in walking_to:
             final_path.append(node)
-            print("Home but not walking: ", node)
+            # print("Home but not walking: ", node)
         elif node in dropoff_locations:
             final_path.append(node)
-            print("Dropoff loc: ", node)
+            # print("Dropoff loc: ", node)
     final_path.append(index)
     print(walking_from)
-    print(final_path)
-    nx.draw(mst)
-    plt.draw()
-    plt.show()
+    # print(final_path)
+    # nx.draw(mst)
+    # plt.draw()
+    # plt.show()
+
+    for node in final_path:
+        if node in walking_from:
+            dict[node] = walking_from[node]
+        elif node in home_indexes:
+            dict[node] = [node]
+
+    # print(final_path)
+    # print(dict)
 
 
-
-    dict[index] = home_indexes
-
-
-    return path, dict
+    return final_path, dict
 
     pass
 
