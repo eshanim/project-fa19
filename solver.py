@@ -120,6 +120,34 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     new_adjacency2[start][end] += new_adjacency[di_path[i]][di_path[i + 1]]
                     new_adjacency2[end][start] += new_adjacency[di_path[i]][di_path[i + 1]]
 
+    dropoff_locations = []
+    for loc in dropoff_locations:
+        if loc in home_indexes:
+            home_indexes.remove(loc)
+
+
+    for loc in dropoff_locations:
+        di_path = nx.dijkstra_path(G2, loc, home)
+        start = di_path[0]
+        end = di_path[len(di_path) - 1]
+        new_adjacency2[start][end] = 0
+        new_adjacency2[end][start] = 0
+        for i in range(len(di_path) -  1):
+            new_adjacency2[start][end] += new_adjacency[di_path[i]][di_path[i + 1]]
+            new_adjacency2[end][start] += new_adjacency[di_path[i]][di_path[i + 1]]
+
+
+    for loc in dropoff_locations:
+        for home in home_indexes:
+            di_path = nx.dijkstra_path(G2, loc, home)
+            start = di_path[0]
+            end = di_path[len(di_path) - 1]
+            new_adjacency2[start][end] = 0
+            new_adjacency2[end][start] = 0
+            for i in range(len(di_path) -  1):
+                new_adjacency2[start][end] += new_adjacency[di_path[i]][di_path[i + 1]]
+                new_adjacency2[end][start] += new_adjacency[di_path[i]][di_path[i + 1]]
+
 
     print(new_adjacency2)
     final_G, m = adjacency_matrix_to_graph(new_adjacency2)
