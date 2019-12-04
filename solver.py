@@ -79,6 +79,7 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     print(all_driving_path)
 
     walking_to = []
+    walking_from = {}
     for i in range(len(all_driving_path) - 1):
         #if first vertex in edge is the same, we should walk
         if all_driving_path[i][0] == all_driving_path[i + 1][0]:
@@ -88,7 +89,12 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
             new_adjacency[all_driving_path[i][0]][all_driving_path[i][1]] = "x"
             new_adjacency[all_driving_path[i][1]][all_driving_path[i][0]] = "x"
             walking_to.append(all_driving_path[i][1])
+            if all_driving_path[i][0] in walking_from:
+                walking_from[all_driving_path[i][0]] = walking_from[all_driving_path[i][0]] + [all_driving_path[i][1]]
+            else:
+                walking_from[all_driving_path[i][0]] = [all_driving_path[i][1]]
 
+    print(walking_from)
 
     G2, m = adjacency_matrix_to_graph(new_adjacency)
 
