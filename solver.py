@@ -44,7 +44,6 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     G, m = adjacency_matrix_to_graph(adjacency_matrix)
 
-
     home_indexes = []
 
     for home in list_of_homes:
@@ -94,7 +93,7 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     count += 1
                     edge_to = j
 
-            if count == 1:
+            if count == 1 and i != index:
                 new_adjacency[i][edge_to] = "x"
                 new_adjacency[edge_to][i] = "x"
                 walking_to.append(i)
@@ -141,6 +140,14 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
 
     G2, m = adjacency_matrix_to_graph(new_adjacency)
+    G = G2
+    pos=nx.spring_layout(G2)
+    nx.draw_networkx_nodes(G2,pos)
+    nx.draw_networkx_labels(G2, pos)
+    nx.draw_networkx_edges(G2,pos,width=1.0,alpha=0.5)
+
+    plt.draw()
+    plt.show()
 
     # condensed shortest paths to edges - use G3 for real
 
