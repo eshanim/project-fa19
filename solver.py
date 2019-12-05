@@ -141,13 +141,13 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     G2, m = adjacency_matrix_to_graph(new_adjacency)
     G = G2
-    pos=nx.spring_layout(G2)
-    nx.draw_networkx_nodes(G2,pos)
-    nx.draw_networkx_labels(G2, pos)
-    nx.draw_networkx_edges(G2,pos,width=1.0,alpha=0.5)
-
-    plt.draw()
-    plt.show()
+    # pos=nx.spring_layout(G2)
+    # nx.draw_networkx_nodes(G2,pos)
+    # nx.draw_networkx_labels(G2, pos)
+    # nx.draw_networkx_edges(G2,pos,width=1.0,alpha=0.5)
+    # 
+    # plt.draw()
+    # plt.show()
 
     # condensed shortest paths to edges - use G3 for real
 
