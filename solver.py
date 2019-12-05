@@ -218,10 +218,9 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     # nx.draw(mst)
     # plt.draw()
     # plt.show()
-    print(final_path)
     for node in final_path:
         if node in walking_from and node in home_indexes:
-            dict[node] = walking_from[node] + [node]
+            dict[node] = [node] + walking_from[node]
         elif node in home_indexes:
             dict[node] = [node]
         elif node in walking_from:
@@ -282,7 +281,6 @@ def solve_from_file(input_file, output_directory, params=[]):
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
     output_file = utils.input_to_output(input_file, output_directory)
-    print(car_path)
     convertToFile(car_path, drop_offs, output_file, list_locations)
 
 
