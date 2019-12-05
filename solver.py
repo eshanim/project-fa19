@@ -83,7 +83,6 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     walking_to = []
     walking_from = {}
 
-
     for i in range(len(new_adjacency)):
         if i in home_indexes:
             count = 0
@@ -93,7 +92,8 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
                     count += 1
                     edge_to = j
 
-            if count == 1 and i != index:
+            #must ensure that this is not a home that we are already dropping someone off at, otherwise it will cut off a line of two homes
+            if count == 1 and i != index and i not in walking_from.keys():
                 new_adjacency[i][edge_to] = "x"
                 new_adjacency[edge_to][i] = "x"
                 walking_to.append(i)
@@ -140,14 +140,14 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
 
     G2, m = adjacency_matrix_to_graph(new_adjacency)
-    G = G2
-    pos=nx.spring_layout(G2)
-    nx.draw_networkx_nodes(G2,pos)
-    nx.draw_networkx_labels(G2, pos)
-    nx.draw_networkx_edges(G2,pos,width=1.0,alpha=0.5)
-
-    plt.draw()
-    plt.show()
+    # G = G2
+    # pos=nx.spring_layout(G2)
+    # nx.draw_networkx_nodes(G2,pos)
+    # nx.draw_networkx_labels(G2, pos)
+    # nx.draw_networkx_edges(G2,pos,width=1.0,alpha=0.5)
+    #
+    # plt.draw()
+    # plt.show()
 
     # condensed shortest paths to edges - use G3 for real
 
@@ -239,7 +239,8 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         for j in range(len(condensed_path) - 1):
             if condensed_path[j] != condensed_path[j + 1]:
                 very_final_path.append(condensed_path[j])
-    if very_final_path[len(very_final_path) - 1] != index:
+
+    if len(very_final_path) >= 1 and [len(very_final_path) - 1] != index:
         very_final_path.append(index)
     print(very_final_path)
     print(dict)
