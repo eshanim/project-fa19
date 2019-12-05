@@ -213,23 +213,33 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
             final_path.append(node)
             # print("Dropoff loc: ", node)
     final_path.append(index)
-    print(walking_from)
+    #print(walking_from)
     # print(final_path)
     # nx.draw(mst)
     # plt.draw()
     # plt.show()
-
+    print(final_path)
     for node in final_path:
-        if node in walking_from:
-            dict[node] = walking_from[node]
+        if node in walking_from and node in home_indexes:
+            dict[node] = walking_from[node] + [node]
         elif node in home_indexes:
             dict[node] = [node]
+        elif node in walking_from:
+            dict[node] = walking_from[node]
 
-    # print(final_path)
-    # print(dict)
+    very_final_path = []
+    for i in range(len(final_path) - 1):
+        condensed_path = nx.dijkstra_path(G2, final_path[i], final_path[i+1])
+        for j in range(len(condensed_path) - 1):
+            if condensed_path[j] != condensed_path[j + 1]:
+                very_final_path.append(condensed_path[j])
+    if very_final_path[len(very_final_path) - 1] != index:
+        very_final_path.append(index)
+    print(very_final_path)
+    print(dict)
 
 
-    return final_path, dict
+    return very_final_path, dict
 
     pass
 
