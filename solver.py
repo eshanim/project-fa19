@@ -206,7 +206,52 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     drive_path.append(index)
 
     mst = nx.minimum_spanning_tree(final_G)
-    path = list(nx.dfs_preorder_nodes(mst, index))
+
+
+
+    new_mst = nx.MultiGraph(mst)
+    for edge in mst.edges():
+        new_mst.add_edge(edge[0], edge[1])
+
+
+
+
+    to_remove = []
+    for node in new_mst:
+        if (new_mst.degree[node] == 0):
+            to_remove.append(node)
+    new_mst.remove_nodes_from(to_remove)
+
+    eulerian = list(nx.eulerian_circuit(new_mst, index))
+
+    path = []
+    for edge in eulerian:
+        path.append(edge[0])
+
+    path.append(eulerian[len(eulerian) - 1][1])
+
+    already_seen = []
+    to_remove = []
+    for i in range(len(path) - 1):
+        if path[i] in already_seen:
+            to_remove.append(i)
+        else:
+            already_seen.append(path[i])
+
+    new_path = []
+    for i in range(len(path) - 1):
+        if i not in to_remove:
+            new_path.append(path[i])
+    path = new_path
+    print(eulerian)
+    print(path)
+
+
+
+
+
+
+
     # print(path)
     final_path = []
     for node in path:
@@ -245,11 +290,58 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     if len(very_final_path) == 0:
         very_final_path = [index]
+
     print(very_final_path)
     print(dict)
 
 
-    return very_final_path, dict
+    path2 = list(nx.dfs_preorder_nodes(mst, index))
+
+    final_path2 = []
+    for node in path2:
+        if node == index:
+            final_path2.append(node)
+            # print("Index: ", node)
+        elif node in home_indexes and node not in walking_to:
+            final_path2.append(node)
+            # print("Home but not walking: ", node)
+        elif node in dropoff_locations:
+            final_path2.append(node)
+            # print("Dropoff loc: ", node)
+    final_path2.append(index)
+
+
+    for node in final_path2:
+        if node in walking_from and node in home_indexes:
+            dict[node] = [node] + walking_from[node]
+        elif node in home_indexes:
+            dict[node] = [node]
+        elif node in walking_from:
+            dict[node] = walking_from[node]
+
+    very_final_path2 = []
+    for i in range(len(final_path2) - 1):
+        condensed_path = nx.dijkstra_path(G2, final_path2[i], final_path2[i+1])
+        for j in range(len(condensed_path) - 1):
+            if condensed_path[j] != condensed_path[j + 1]:
+                very_final_path2.append(condensed_path[j])
+
+    if len(very_final_path2) >= 1 and [len(very_final_path2) - 1] != index:
+        very_final_path2.append(index)
+
+    if len(very_final_path2) == 0:
+        very_final_path2 = [index]
+
+    opt1 = cost_of_solution(G, very_final_path, dict)
+    opt2 = cost_of_solution(G, very_final_path2, dict)
+
+    ultra_final_path = []
+    if (opt1 <= opt2):
+        ultra_final_path = very_final_path
+    else:
+        ultra_final_path = very_final_path2
+
+    return ultra_final_path, dict
 
     pass
 
