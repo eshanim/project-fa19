@@ -242,6 +242,9 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
     if len(very_final_path) >= 1 and [len(very_final_path) - 1] != index:
         very_final_path.append(index)
+
+    if len(very_final_path) == 0:
+        very_final_path = [index]
     print(very_final_path)
     print(dict)
 
