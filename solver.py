@@ -214,36 +214,37 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         new_mst.add_edge(edge[0], edge[1])
 
 
+    if new_mst.degree[index] != 0:
+        to_remove = []
+        for node in new_mst:
+            if (new_mst.degree[node] == 0):
+                to_remove.append(node)
+        new_mst.remove_nodes_from(to_remove)
 
+        eulerian = list(nx.eulerian_circuit(new_mst, index))
 
-    to_remove = []
-    for node in new_mst:
-        if (new_mst.degree[node] == 0):
-            to_remove.append(node)
-    new_mst.remove_nodes_from(to_remove)
+        path = []
+        for edge in eulerian:
+            path.append(edge[0])
 
-    eulerian = list(nx.eulerian_circuit(new_mst, index))
+        path.append(eulerian[len(eulerian) - 1][1])
 
-    path = []
-    for edge in eulerian:
-        path.append(edge[0])
+        already_seen = []
+        to_remove = []
+        for i in range(len(path) - 1):
+            if path[i] in already_seen:
+                to_remove.append(i)
+            else:
+                already_seen.append(path[i])
 
-    path.append(eulerian[len(eulerian) - 1][1])
-
-    already_seen = []
-    to_remove = []
-    for i in range(len(path) - 1):
-        if path[i] in already_seen:
-            to_remove.append(i)
-        else:
-            already_seen.append(path[i])
-
-    new_path = []
-    for i in range(len(path) - 1):
-        if i not in to_remove:
-            new_path.append(path[i])
-    path = new_path
-    print(eulerian)
+        new_path = []
+        for i in range(len(path) - 1):
+            if i not in to_remove:
+                new_path.append(path[i])
+        path = new_path
+        print(eulerian)
+    else:
+        path = [index]
     print(path)
 
 
